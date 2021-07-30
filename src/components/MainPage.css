@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap");
+
+body {
+  background-color: #eeeeee;
+}
+
+h1 {
+  font-family: "Amatic SC", cursive;
+  margin-left: 16px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.main-container {
+  margin-top: 16px;
+  padding: 16px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

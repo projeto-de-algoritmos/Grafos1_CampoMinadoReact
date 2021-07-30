@@ -1,13 +1,7 @@
-
+import MainPage from "./components/MainPage";
 
 function App() {
-  return (
-    <div >
-      <header >
-        <p style={{paddingLeft: 16}}>Imagine um campo minado...</p>
-      </header>
-    </div>
-  );
+  return <MainPage />;
 }
 
 export default App;
