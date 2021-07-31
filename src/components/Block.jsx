@@ -20,16 +20,25 @@ const useStyles = makeStyles({
   },
 });
 
-const Block = memo(({ onClick, open }) => {
-  const classes = useStyles();
+const Block = memo(
+  ({ onClick, open }) => {
+    const classes = useStyles();
 
-  return (
-    <Button
-      className={clsx(classes.button, { [classes.opened]: open })}
-      disabled={open}
-      onClick={onClick}
-    />
-  );
-});
+    return (
+      <Button
+        className={clsx(classes.button, { [classes.opened]: open })}
+        disabled={open}
+        onClick={onClick}
+      />
+    );
+  },
+  (prev, next) => {
+    if (prev.open !== next.open) {
+      return false;
+    }
+
+    return true;
+  }
+);
 
 export default Block;
