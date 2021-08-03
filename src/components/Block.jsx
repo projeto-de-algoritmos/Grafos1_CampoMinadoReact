@@ -1,6 +1,7 @@
 import React, { memo } from "react";
 import "./Block.css";
-import { Button, makeStyles } from "@material-ui/core";
+import { IconButton, Button, makeStyles } from "@material-ui/core";
+import { FaBomb } from "react-icons/fa";
 import clsx from "clsx";
 
 const useStyles = makeStyles({
@@ -21,19 +22,25 @@ const useStyles = makeStyles({
 });
 
 const Block = memo(
-  ({ onClick, open }) => {
+  ({ onClick, open, isBomb, neighbors }) => {
     const classes = useStyles();
 
     return (
-      <Button
+      <IconButton
         className={clsx(classes.button, { [classes.opened]: open })}
         disabled={open}
         onClick={onClick}
-      />
+      >
+        {open && (isBomb ? <FaBomb /> : neighbors === 0 ? " " : neighbors)}
+      </IconButton>
     );
   },
   (prev, next) => {
-    if (prev.open !== next.open) {
+    if (
+      prev.open !== next.open ||
+      prev.isBomb !== next.isBomb ||
+      prev.neighbors !== next.neighbors
+    ) {
       return false;
     }
 
