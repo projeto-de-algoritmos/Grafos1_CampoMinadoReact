@@ -1,11 +1,104 @@
 import { Grid, Switch, Typography } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Board from "./Board";
 import "./MainPage.css";
-import { floodFillDFS, floodFillBFS } from "../utils";
+import {
+  ROW,
+  COL,
+  BOMB_RATIO,
+  floodFillDFS,
+  floodFillBFS,
+  insideMatrix,
+  shuffleArray,
+} from "../utils";
 
 const MainPage = () => {
   const [isDFS, setIsDFS] = useState(true);
+  const [map, setMap] = useState([[]]);
+  const [isLoading, setIsLoading] = useState(new Map());
+  const traverse = useRef(floodFillDFS);
+
+  const vis = useRef(
+    Array.from({ length: ROW }, (v, i) =>
+      Array.from({ length: COL }, (v, j) => false)
+    )
+  );
+
+  useEffect(() => {
+    if (isDFS) {
+      traverse.current = floodFillDFS;
+    } else {
+      traverse.current = floodFillBFS;
+    }
+  }, [isDFS]);
+
+  const createMap = () => {
+    const mock = Array.from({ length: ROW * COL }, (v, i) => i);
+    const pairs = mock.map((i) => [Math.floor(i / COL), i % COL]);
+    shuffleArray(pairs);
+    const bombs = pairs.slice(0, Math.floor(ROW * COL * BOMB_RATIO));
+
+    let initMap = [];
+    for (let i = 0; i < ROW; i++) {
+      initMap[i] = [];
+      for (let j = 0; j < COL; j++) {
+        initMap[i][j] = {
+          key: `block-${i}-${j}`,
+          open: false,
+          isBomb: false,
+          neighbors: 0,
+        };
+      }
+    }
+
+    bombs.forEach(([i, j]) => {
+      initMap[i][j].isBomb = true;
+      for (let x = -1; x <= 1; ++x) {
+        for (let y = -1; y <= 1; ++y) {
+          if (x === 0 && y === 0) continue;
+          if (insideMatrix(i + x, y + j)) initMap[i + x][y + j].neighbors++;
+        }
+      }
+    });
+    setMap(initMap);
+  };
+
+  useEffect(() => {
+    createMap();
+  }, []);
+
+  const openNode = (i, j) => {
+    setMap((map) => {
+      const newMap = [...map];
+      const newLine = [...map[i]];
+      newLine.splice(j, 1, { ...newLine[j], open: true });
+      newMap.splice(i, 1, newLine);
+      return newMap;
+    });
+  };
+
+  const stopCondition = (i, j) => {
+    return map[i][j].neighbors !== 0;
+  };
+
+  const isBomb = (i, j) => map[i][j].isBomb;
+
+  const handleBlockClick = (i, j) => {
+    setIsLoading((old) => {
+      const cp = new Map(old);
+      cp.set(`i${i}+j${j}`, true);
+      return cp;
+    });
+    traverse
+      .current(i, j, vis.current, stopCondition, isBomb, openNode)
+      .finally(() =>
+        setIsLoading((old) => {
+          const cp = new Map(old);
+          cp.delete(`i${i}+j${j}`);
+          return cp;
+        })
+      );
+  };
 
   return (
     <>
@@ -21,7 +114,11 @@ const MainPage = () => {
             BFS
           </Typography>
           <Grid>
-            <Switch checked={isDFS} onChange={(e) => setIsDFS(!isDFS)} />
+            <Switch
+              disabled={isLoading.size > 0}
+              checked={isDFS}
+              onChange={(e) => setIsDFS(!isDFS)}
+            />
           </Grid>
           <Typography component={Grid} item>
             DFS
@@ -30,7 +127,7 @@ const MainPage = () => {
       </Grid>
       <div className="main-container">
         <div>
-          <Board onClick={isDFS ? floodFillDFS : floodFillBFS} />
+          <Board map={map} onClick={handleBlockClick} />
         </div>
       </div>
     </>
