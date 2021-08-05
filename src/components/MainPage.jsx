@@ -11,12 +11,19 @@ import {
   insideMatrix,
   shuffleArray,
 } from "../utils";
+import EndDialog from "./EndDialog";
+
+const NODES = ROW * COL - Math.floor(ROW * COL * BOMB_RATIO);
 
 const MainPage = () => {
   const [isDFS, setIsDFS] = useState(true);
   const [map, setMap] = useState([[]]);
   const [isLoading, setIsLoading] = useState(new Map());
   const traverse = useRef(floodFillDFS);
+  const [openModal, setOpenModal] = useState(false);
+  const [isVictory, setIsVictory] = useState(false);
+  const [pendingRestart, setPendingRestart] = useState(false);
+  const [openedNodes, setOpenedNodes] = useState(0);
 
   const vis = useRef(
     Array.from({ length: ROW }, (v, i) =>
@@ -31,6 +38,26 @@ const MainPage = () => {
       traverse.current = floodFillBFS;
     }
   }, [isDFS]);
+
+  useEffect(() => {
+    if (pendingRestart && isLoading.size === 0) {
+      setPendingRestart(false);
+      setOpenModal(true);
+      setOpenedNodes(0);
+      createMap();
+      vis.current = Array.from({ length: ROW }, (v, i) =>
+        Array.from({ length: COL }, (v, j) => false)
+      );
+      setOpenModal(false);
+    }
+  }, [isLoading, pendingRestart]);
+
+  useEffect(() => {
+    if (openedNodes === NODES) {
+      setIsVictory(true);
+      setOpenModal(true);
+    }
+  }, [openedNodes]);
 
   const createMap = () => {
     const mock = Array.from({ length: ROW * COL }, (v, i) => i);
@@ -68,6 +95,7 @@ const MainPage = () => {
   }, []);
 
   const openNode = (i, j) => {
+    if (!isBomb(i, j)) setOpenedNodes((oldValue) => oldValue + 1);
     setMap((map) => {
       const newMap = [...map];
       const newLine = [...map[i]];
@@ -89,6 +117,13 @@ const MainPage = () => {
       cp.set(`i${i}+j${j}`, true);
       return cp;
     });
+
+    if (isBomb(i, j)) {
+      openNode(i, j);
+      setIsVictory(false);
+      setOpenModal(true);
+    }
+
     traverse
       .current(i, j, vis.current, stopCondition, isBomb, openNode)
       .finally(() =>
@@ -98,6 +133,10 @@ const MainPage = () => {
           return cp;
         })
       );
+  };
+
+  const handleRestart = () => {
+    setPendingRestart(true);
   };
 
   return (
@@ -130,6 +169,11 @@ const MainPage = () => {
           <Board map={map} onClick={handleBlockClick} />
         </div>
       </div>
+      <EndDialog
+        open={openModal}
+        isVictory={isVictory}
+        onRestartClick={handleRestart}
+      />
     </>
   );
 };

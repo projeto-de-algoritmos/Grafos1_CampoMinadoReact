@@ -17,7 +17,11 @@ const Row = memo(
   ),
   (prev, next) => {
     prev.row.forEach((col, j) => {
-      if (next.row[j].open !== col.open) {
+      if (
+        next.row[j].open !== col.open ||
+        next.row[j].isBomb !== col.isBomb ||
+        next.row[j].neighbors !== col.neighbors
+      ) {
         return false;
       }
       return true;
