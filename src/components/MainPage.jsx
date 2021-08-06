@@ -22,7 +22,7 @@ const MainPage = () => {
   const traverse = useRef(floodFillDFS);
   const [openModal, setOpenModal] = useState(false);
   const [isVictory, setIsVictory] = useState(false);
-  const pendingRestart = useRef(false);
+  const [pendingRestart, setPendingRestart] = useState(false);
   const [openedNodes, setOpenedNodes] = useState(0);
 
   const vis = useRef(
@@ -40,8 +40,8 @@ const MainPage = () => {
   }, [isDFS]);
 
   useEffect(() => {
-    if (pendingRestart.current && isLoading.size === 0) {
-      pendingRestart.current = false;
+    if (pendingRestart && isLoading.size === 0) {
+      setPendingRestart(false);
       setOpenModal(true);
       setOpenedNodes(0);
       createMap();
@@ -122,6 +122,7 @@ const MainPage = () => {
       openBoard(i, j);
       setIsVictory(false);
       setOpenModal(true);
+      return;
     }
 
     traverse
@@ -142,7 +143,7 @@ const MainPage = () => {
       return cp;
     });
 
-    const mock = () => false;
+    const mock = (a, b) => false;
 
     traverse.current(i, j, vis.current, mock, mock, openNode).finally(() =>
       setIsLoading((old) => {
@@ -154,7 +155,7 @@ const MainPage = () => {
   };
 
   const handleRestart = () => {
-    pendingRestart.current = true;
+    setPendingRestart(true);
   };
 
   return (
