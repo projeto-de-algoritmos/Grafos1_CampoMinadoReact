@@ -19,17 +19,17 @@ const EndDialog = ({ open, isVictory, onRestartClick }) => {
       </DialogTitle>
       <DialogActions>
         <Grid container direction="row" justifyContent="space-between">
-          <Button color="secondary" onClick={onRestartClick}>
-            Recomeçar
-          </Button>
           <Button
-            color="primary"
+            color="secondary"
             onClick={() => {
               window.location.href =
                 "https://www.google.com/search?q=campo+minado";
             }}
           >
             Finalizar
+          </Button>
+          <Button color="primary" variant="outlined" onClick={onRestartClick}>
+            Recomeçar
           </Button>
         </Grid>
       </DialogActions>

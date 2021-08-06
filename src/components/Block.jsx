@@ -21,6 +21,18 @@ const useStyles = makeStyles({
   },
 });
 
+const COLORS = [
+  undefined,
+  "#4BFFAF",
+  "#47C0E8",
+  "#5B6AFF",
+  "#A647E8",
+  "#FF4EA7",
+  "#A0005F",
+  "#57016E",
+  "#000000",
+];
+
 const Block = memo(
   ({ onClick, open, isBomb, neighbors }) => {
     const classes = useStyles();
@@ -31,7 +43,14 @@ const Block = memo(
         disabled={open}
         onClick={onClick}
       >
-        {open && (isBomb ? <FaBomb /> : neighbors === 0 ? " " : neighbors)}
+        {open &&
+          (isBomb ? (
+            <FaBomb color="#57016E" />
+          ) : neighbors === 0 ? (
+            " "
+          ) : (
+            <span style={{ color: COLORS[neighbors] }}>{neighbors}</span>
+          ))}
       </IconButton>
     );
   },

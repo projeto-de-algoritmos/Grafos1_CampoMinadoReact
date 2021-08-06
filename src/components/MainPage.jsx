@@ -22,7 +22,7 @@ const MainPage = () => {
   const traverse = useRef(floodFillDFS);
   const [openModal, setOpenModal] = useState(false);
   const [isVictory, setIsVictory] = useState(false);
-  const [pendingRestart, setPendingRestart] = useState(false);
+  const pendingRestart = useRef(false);
   const [openedNodes, setOpenedNodes] = useState(0);
 
   const vis = useRef(
@@ -40,8 +40,8 @@ const MainPage = () => {
   }, [isDFS]);
 
   useEffect(() => {
-    if (pendingRestart && isLoading.size === 0) {
-      setPendingRestart(false);
+    if (pendingRestart.current && isLoading.size === 0) {
+      pendingRestart.current = false;
       setOpenModal(true);
       setOpenedNodes(0);
       createMap();
@@ -53,11 +53,11 @@ const MainPage = () => {
   }, [isLoading, pendingRestart]);
 
   useEffect(() => {
-    if (openedNodes === NODES) {
+    if (openedNodes === NODES && !openModal) {
       setIsVictory(true);
       setOpenModal(true);
     }
-  }, [openedNodes]);
+  }, [openedNodes, openModal]);
 
   const createMap = () => {
     const mock = Array.from({ length: ROW * COL }, (v, i) => i);
@@ -119,7 +119,7 @@ const MainPage = () => {
     });
 
     if (isBomb(i, j)) {
-      openNode(i, j);
+      openBoard(i, j);
       setIsVictory(false);
       setOpenModal(true);
     }
@@ -135,8 +135,26 @@ const MainPage = () => {
       );
   };
 
+  const openBoard = (i, j) => {
+    setIsLoading((old) => {
+      const cp = new Map(old);
+      cp.set(`i${i}+j${j}`, true);
+      return cp;
+    });
+
+    const mock = () => false;
+
+    traverse.current(i, j, vis.current, mock, mock, openNode).finally(() =>
+      setIsLoading((old) => {
+        const cp = new Map(old);
+        cp.delete(`i${i}+j${j}`);
+        return cp;
+      })
+    );
+  };
+
   const handleRestart = () => {
-    setPendingRestart(true);
+    pendingRestart.current = true;
   };
 
   return (
@@ -163,6 +181,12 @@ const MainPage = () => {
             DFS
           </Typography>
         </Grid>
+
+        {openedNodes > 0 && (
+          <Grid item>
+            <Typography variant="h5">{`Nós abertos: ${openedNodes}`}</Typography>
+          </Grid>
+        )}
       </Grid>
       <div className="main-container">
         <div>
