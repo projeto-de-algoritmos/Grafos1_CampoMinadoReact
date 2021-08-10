@@ -1,47 +1,50 @@
-[//]: <> (**!! Atenção: Renomeie o seu repositório para \(Tema\)_\(NomeDoProjeto\). !!**) 
+# Campo Minado
 
-Temas:
- - Grafos1
- - Grafos2
- - PD
- - D&C
- - Greed
- - Final 
- 
-[//]: <> (**!! *Não coloque os nomes dos alunos no título do repositório*. Exemplo de título correto: Grafos2_Labirinto-do-Minotauro !!**)
+**Número da Lista**: 20
 
-# NomedoProjeto
-
-**Número da Lista**: X
-
-**Conteúdo da Disciplina**: Grafos
+**Conteúdo da Disciplina**: Grafos1
 
 ## Alunos
-|Matrícula | Aluno |
-| -- | -- |
-| 18/0054848  |  Rhuan Carlos Pereira de Queiroz |
-| 18/0028308  |  Thiago Guilherme Muniz Ferreira |
 
-## Sobre 
-Descreva os objetivos do seu projeto e como ele funciona. 
+| Matrícula  | Aluno                           |
+| ---------- | ------------------------------- |
+| 18/0054848 | Rhuan Carlos Pereira de Queiroz |
+| 18/0028308 | Thiago Guilherme Muniz Ferreira |
+
+## Sobre
+
+Um jogo de campo minado, simples, para poder visualizar o funcionando do algoritmo flood fill implementado tanto com BFS e DFS.
 
 ## Screenshots
-Adicione 3 ou mais screenshots do projeto em funcionamento.
 
-## Instalação 
+![Campo Minado](./public/print_1.png)
+
+![Campo Minado Derrota](./public/print_2.png)
+
+Um GIF também está disponível para visualização [aqui](https://drive.google.com/file/d/1gICQWdWi2OWrGH9mgetofJ91-QURF5A_/view?usp=sharing).
+
+## Instalação
 
 **Linguagem**: Javascript
 
 **Framework**: React.js
 
-Descreva os pré-requisitos para rodar o seu projeto e os comandos necessários.
+Instale as dependências do projeto usando o npm ou yarn:
+`npm install` ou `yarn`
 
-## Uso 
-Explique como usar seu projeto caso haja algum passo a passo após o comando de execução.
+Inicie o servidor local:
+`npm start` ou `yarn start`
 
-## Outros 
-Quaisquer outras informações sobre seu projeto podem ser descritas abaixo.
+## Uso
 
+Abra navegador em `localhost:3000`, clique em um bloco, divirta-se (a menos que seu primeiro clique seja uma bomba)!
 
+## Outros
 
+Se estiver achando muito difícil, entre no arquivo `utils/constants.js` e diminua a constante `BOMB_RATIO`.
 
+**IMPORTANTE:** Atualize a página, mesmo que o hot reload já tenha atualizado, evita promises perdidas...
+
+## Vídeo
+
+O video se encontra pasta video.
