@@ -47,4 +47,4 @@ Se estiver achando muito difícil, entre no arquivo `utils/constants.js` e dimin
 
 ## Vídeo
 
-O video se encontra pasta video.
+O video de apresentação se encontra na pasta video.
